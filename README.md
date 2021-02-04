@@ -1,27 +1,27 @@
-# Coding
+# Angular Banking Projekt
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.7.
+Die Webapplikation wurde mit dem TypeScript-basierten Front-End-Web Applikations Framework Angular geschrieben und kommuniziert mit einer AWS-Serverless-Architektur, welche für die Verwaltung der Datenbank zuständig ist.
 
-## Development server
+## Key Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Authentifizierung mittels jwt-Token
+- Konto-und Transaktionsübersicht mittels Widgets auf der Landing-Page
+- Speichern von Transaktionen, die zu einem späteren Zeitpunkt durchgeführt werden können
+- Übersicht über durchgeführte Transaktionen mittels Tabelle
+- Filter- und Sortierfunktionen für Tabellen, um Transaktionen einfacher zu finden (Suchfilter, Datumsfilter, Sortierfunktion für Tabellenspalten)
 
-## Code scaffolding
+## Live Demo der Website
+Unter https://atmare.github.io/banking_app_deploy/ steht eine Live Demonstration der Implementierung zur Verfügung. Um alle Features und Komponenten zu testen ist das Einloggen mit gültigen Anmeldedaten notwendig.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## Genutzte Frameworks und Plattformen
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+- Angular CLI v10.1.7 oder höher
+- Node.js v14.13.1 oder höher
+- Node Package Manager (npm)
+- Ng Bootstrap v7.0.0
+- Bootstrap v4.5.0
+- angular-fontawesome v0.7.0
+- Github Pages (Publishing)
+- Github (Hosting)
+- Amazon Web Services (AWS) (Datenbank Verwaltung)
