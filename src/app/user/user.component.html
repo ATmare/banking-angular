@@ -5,27 +5,26 @@
   </h3>
 
   <div fxLayout="row wrap" fxLayoutAlign="center center">
-    <div class="square shadow  m-2 pt-2" fxFlex="0 1 calc(33.3% - 32px)">
-      <h4 class="justify-content-center text-center py-3 font-weight-normal">
+    <div class="card square shadow m-2" fxFlex="0 1 calc(33.3% - 32px)">
+      <div class="card-header justify-content-center text-center font-weight-normal">
         Einnahmen und Ausgaben
-      </h4>
-      <app-revenue-costs-widget></app-revenue-costs-widget> </div>
-    <div class="square shadow  m-2 pt-2" fxFlex="0 1 calc(33.3% - 32px)">
-      <h4 class="justify-content-center text-center py-3 font-weight-normal">
+      </div>
+      <app-revenue-costs-widget class="pt-3 card-body"></app-revenue-costs-widget>
+    </div>
+    <div class="card square shadow m-2" fxFlex="0 1 calc(33.3% - 32px)">
+      <div class="card-header justify-content-center text-center font-weight-normal">
         Konten
-      </h4>
-      <app-accounts-widget></app-accounts-widget> </div>
-    <div class="square shadow  m-2 pt-2" fxFlex="0 1 calc(33.3% - 32px)"> <app-transaction-widget></app-transaction-widget></div>
-  </div>
-
-  <br><br><br><br><br><br><br>
-
-  <button class="btn btn-primary" (click)="addComponent()">Widget hinzufügen</button>
-
-  <div fxLayout="row wrap" fxLayoutAlign="center">
-    <div class="card-deck" *ngFor="let widget of widgets">
-      <app-widget class="card text-center shadow mt-3 mr-5 cardwidth" selected={{widget.typ}} [id]=widget.id></app-widget>
+      </div>
+      <app-accounts-widget class="pt-3 card-body"></app-accounts-widget>
+    </div>
+    <div class="card square shadow m-2" fxFlex="0 1 calc(33.3% - 32px)">
+      <div class="card-header justify-content-center text-center font-weight-normal">
+        Transaktionen
+      </div>
+      <app-transaction-widget class="pt-3 card-body"></app-transaction-widget>
     </div>
   </div>
+
+  <app-chart-account-history class="chart"></app-chart-account-history>
 
 </div>

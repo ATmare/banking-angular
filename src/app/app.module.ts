@@ -76,6 +76,9 @@ import {PortalModule} from '@angular/cdk/portal';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CdkStepperModule} from '@angular/cdk/stepper';
 
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxEchartsModule } from 'ngx-echarts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -94,7 +97,7 @@ import {CdkStepperModule} from '@angular/cdk/stepper';
     NewTransactionComponent,
     AccountsDropdownLgComponent,
     ProfileComponent,
-    TransactionOverviewComponent,
+    TransactionOverviewComponent
   ],
   imports: [
     BrowserModule,
@@ -153,7 +156,16 @@ import {CdkStepperModule} from '@angular/cdk/stepper';
     MatTooltipModule,
     MatTreeModule,
     PortalModule,
-    ScrollingModule
+    ScrollingModule,
+    NgxChartsModule,
+    NgxEchartsModule.forRoot({
+      /**
+       * This will import all modules from echarts.
+       * If you only need custom modules,
+       * please refer to [Custom Build] section.
+       */
+      echarts: () => import('echarts'), // or import('./path-to-my-custom-echarts')
+    }),
   ],
   exports: [
     MatAutocompleteModule,

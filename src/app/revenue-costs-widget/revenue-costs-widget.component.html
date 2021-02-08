@@ -1,8 +1,9 @@
-<div class="container">
+<div class="container px-0">
 
-  <app-accounts-dropdown (currAcc)="getAccount($event)"></app-accounts-dropdown>
+  <app-accounts-dropdown class="" (currAcc)="getAccount($event)"></app-accounts-dropdown>
+  <p class="text-center pt-2 mb-0"> {{ current  | date: ' MMMM yyyy' }} </p>
 
-  <p class="chart" id="{{idName}}"> Placeholder for bar chart </p>
+  <div echarts [options]="options" class="demo-chart"  [merge]= "mergeOptions"></div>
+
 </div>
-
 

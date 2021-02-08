@@ -5,25 +5,13 @@
 
 .square {
   border-radius: 0.5vw 0.5vw 0.5vw 0.5vw;
-  background: rgb(230,230,230);
+  //background: rgb(230,230,230);
   width: 50vw;
   min-width: 300px!important;
   min-height: 300px!important;
-  max-height: 320px!important;
+  max-height: 300px!important;
 }
 
-.cardwidth {
-  width: 24vw;
-}
-
-.cardwidth2 {
-  width: 48vw;
-}
-
-@mixin user-theme($theme) {
-  $primary: map-get($theme, primary);
-
-  div {
-    color: white;
-  }
+.chart {
+  min-height: 300px;
 }

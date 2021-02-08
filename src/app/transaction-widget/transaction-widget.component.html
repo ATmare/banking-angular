@@ -1,12 +1,8 @@
-<div class="container">
-
-  <h4 class="justify-content-center text-center py-3 font-weight-normal">
-    Transaktionen
-  </h4>
+<div class="container px-0">
 
   <app-accounts-dropdown (currAcc)="getAccount($event)"></app-accounts-dropdown>
 
-  <div class="text-center py-4 pointer" (click)="onSubmit()">
+  <div class="text-center pt-4 pointer" (click)="onSubmit()">
     <ul class="list-group list-group-flush" *ngFor="let trans of transactions; let i = index">
       <li class="list-group-item"  *ngIf="i < 4">
         <div>

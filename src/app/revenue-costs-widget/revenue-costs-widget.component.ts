@@ -1,6 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import * as CanvasJS from 'src/assets/canvasjs.min';
-import {Account, Iban, TransactionRequest, TransactionResponse} from '../api/Api';
+import {Component, OnInit} from '@angular/core';
+import {Account, Iban, Transaction, TransactionRequest, TransactionResponse} from '../api/Api';
 import {UserService} from '../services/user-service';
 
 @Component({
@@ -9,87 +8,153 @@ import {UserService} from '../services/user-service';
   styleUrls: ['./revenue-costs-widget.component.scss']
 })
 export class RevenueCostsWidgetComponent implements OnInit {
-  @Input() idName: string = 'default';
-  account: Account = {iban: '', balance: 0, name: '', accountType: '', limit: 0};
-  ibanArr: Iban[] = [];
-  transactionResponse: TransactionResponse[] =
-    [{
-      transactions: [{
-        timestamp: new Date(),
-        amount: 0,
-        text: '',
-        textType: '',
-        type: '',
-        iban: '',
-        complementaryIban: '',
-        complementaryName: ''
-      }],
-      lastDate: new Date()
-    }];
-  constructor(private userService: UserService) { }
+  ibanArr: Iban[];
+  account: Account;
+  transactions: Transaction[];
+
+  current = new Date();
+  options: any;
+  mergeOptions = {};
+  data = [
+    {
+      value: 0,
+      itemStyle: {color: 'red'},
+    },
+    {
+      value: 0,
+      itemStyle: {color: 'green'},
+    }
+  ];
+
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
+    const dataAxis = [
+      'Ausgaben',
+      'Einnahmen'
+    ];
+    const yMax = 4;
+    const dataShadow = [];
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.data.length; i++) {
+      dataShadow.push(yMax);
+    }
+
+    this.options = {
+      xAxis: {
+        data: dataAxis,
+        axisLabel: {
+          inside: false,
+          color: '#000',
+        },
+        axisTick: {
+          show: false,
+        },
+        axisLine: {
+          show: true,
+        },
+        z: 10,
+      },
+      yAxis: {
+        axisLine: {
+          show: false,
+        },
+        axisTick: {
+          show: false,
+        },
+        axisLabel: {
+          show: false,
+        },
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: (params) => {
+          const tar = params[1];
+          return tar.name + '<br/>' + tar.value + ' €';
+        }
+      },
+      grid: {
+        top: 30,
+        bottom: 30,
+      },
+      series: [
+        {
+          // For shadow
+          name: '',
+          type: 'bar',
+          itemStyle: {
+            color: 'rgba(0,0,0,0.05)'
+          },
+          barGap: '-100%',
+          barCategoryGap: '40%',
+          data: dataShadow,
+          animation: false,
+        },
+        {
+          type: 'bar',
+          data: this.data,
+          label: {
+            show: true,
+            position: 'outside'
+          },
+        },
+      ],
+    };
   }
 
   getAccount(account: Account): void {
     this.account = account;
-    const userData = JSON.parse(sessionStorage.getItem('user'));
-    this.ibanArr = JSON.parse(sessionStorage.getItem('user')).accounts;
-    let ibanArr = [this.account.iban];
-
-    if (this.account.name === 'Alle Konten') {
-      ibanArr = userData.accounts;
-    }
-
+    this.ibanArr = this.userService.getIbans(this.account);
+    // TODO: Change to n: 10 as soon as backend is finished
     const request: TransactionRequest = {n: 1000, stored: false};
-    this.userService.getTransactions(request, ibanArr).subscribe((response: TransactionResponse[]) => {
-      this.transactionResponse = [];
-      for (const transactionResponse of response) {
-        this.transactionResponse.push(transactionResponse);
-      }
+    this.userService.getTransactions(request, this.ibanArr).subscribe((response: TransactionResponse[]) => {
+      this.transactions = this.userService.sortTransactions(response);
+      this.calculateIncomeAndOutgoing();
     });
   }
 
-  ngAfterViewInit() {
-    const ein = 4312.21;
-    let aus = -2367.32;
-    if (aus < 0) {
-      aus = aus * -1;
-    }
-    const chart = new CanvasJS.Chart(this.idName, {
-      animationEnabled: true,
-      exportEnabled: false,
-      backgroundColor: 'transparent',
-      dataPointWidth: 100,
-      axisY: {
-        lineThickness: 0,
-        gridThickness: 0,
-        title: '',
-        tickLength: 0,
-        margin: 0,
-        labelFormatter: function(e) {
-          return '';
-        },
-        viewportMaximum : ein,
-        viewportMinimum : 0
-      },
-      axisX: {
-        lineThickness: 0,
-        tickThickness: 0,
-        labelFontSize: 15,
-        labelAngle: 0,
-        labelFontWeight: 'lighter'
-      },
-      data: [{
-        type: 'column',
-        dataPoints: [
-          { y: ein, label: 'Eingänge: +' + ein + '€', color: '#66CF5F' },
-          { y: aus, label: 'Ausgänge: ' + (aus * -1) + '€', color: '#EB4E3D' }
-        ]
-      }]
+  calculateIncomeAndOutgoing(): void {
+    let income = 0;
+    let outgoing = 0;
+    this.transactions.filter((t: Transaction) => {
+      const tempDate = new Date(t.timestamp);
+      if (tempDate.getMonth() === this.current.getMonth() && t.amount > 0) {
+        income = income + t.amount;
+      }
+      else if (tempDate.getMonth() === this.current.getMonth() && t.amount < 0) {
+        outgoing = outgoing + t.amount;
+      }
+      return tempDate.getMonth() === this.current.getMonth() && t.amount > 0;
     });
+    this.data[1].value = income;
+    this.data[0].value = outgoing;
 
-    chart.render();
+    this.mergeOptions = {
+      series: [
+        {
+          name: '',
+          type: 'bar',
+          itemStyle: {
+            color: 'rgba(0,0,0,0.05)'
+          },
+          barGap: '-100%',
+          barCategoryGap: '40%',
+          animation: false,
+        },
+        {
+          type: 'bar',
+          data: this.data,
+          label: {
+            show: true,
+            position: 'outside'
+          },
+        },
+      ]
+    };
   }
 
 }
